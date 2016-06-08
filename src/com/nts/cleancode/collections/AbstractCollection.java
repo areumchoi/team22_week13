@@ -1,33 +1,99 @@
 package com.nts.cleancode.collections;
 
 public abstract class AbstractCollection{
+	protected static int INITIAL_CAPACITY = 10;
+	protected Object[] elements = new Object[INITIAL_CAPACITY];
+	protected int size = 0;
+	protected boolean readOnly;
+
 	public void addAll(AbstractCollection c) {
-		if (c instanceof Set) {
-			Set s = (Set)c;
-			for (int i=0; i < s.size(); i++) {
-				if (!contains(s.getElementAt(i))) {
-					add(s.getElementAt(i));
-				}
-			}
-			
-		} else if (c instanceof List) {
-			List l = (List)c;
-			for (int i=0; i < l.size(); i++) {
-				if (!contains(l.get(i))) {
-					add(l.get(i));
-				}
+		for (int i=0; i < c.size(); i++) {
+			if (!contains(c.getElementAt(i))) {
+				add(c.getElementAt(i));
 			}
 		}
 	}
 
 
-	public abstract boolean isEmpty();
+	public boolean isEmpty() {
+		return size == 0;
+	}
 
-	public abstract void add(Object element);
 
-	public abstract boolean remove(Object element);
+	public boolean contains(Object element) {
+		for (int i = 0; i < size; i++)
+			if (elements[i].equals(element))
+				return true;
+		return false;
+	}
 
-	public abstract boolean contains(Object element);
 
-	public abstract int size();
+	public int size() {
+		return size;
+	}
+
+
+	public boolean remove(Object element) {
+		if (readOnly)
+			return false;
+		for (int i = 0; i < size; i++)
+			if (elements[i].equals(element)) {
+				elements[i] = null;
+				Object[] newElements = new Object[size - 1];
+				int k = 0;
+				for (int j = 0; j < size; j++) {
+					if (elements[j] != null)
+						newElements[k++] = elements[j];
+				}
+				size--;
+				elements = newElements;
+				return true;
+			}
+		return false;
+	}
+
+
+	public Object getElementAt(int index) {
+		return elements[index];
+	}
+
+
+
+	public int capacity() {
+		return elements.length;
+	}
+
+
+	public void setReadOnly(boolean b) {
+		readOnly = b;
+	}
+
+
+	public void add(Object element) {
+		if (readOnly)
+			return;
+		if (shouldGrow()) {
+			grow();
+		}
+		addElement(element);
+	}
+
+
+	protected void addElement(Object element) {
+		elements[size++] = element;
+	}
+
+
+	protected void grow() {
+		Object[] newElements =
+			new Object[elements.length + 10];
+		for (int i = 0; i < size; i++)
+			newElements[i] = elements[i];
+		elements = newElements;
+	}
+
+
+	protected boolean shouldGrow() {
+		return size + 1 > elements.length;
+	}
 }
