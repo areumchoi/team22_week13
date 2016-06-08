@@ -17,9 +17,6 @@ public abstract class AbstractCollection{
 					add(l.get(i));
 				}
 			}
-		} else if (c instanceof Map) {
-			Map m = (Map)c;
-			addAll(m);			
 		}
 	}
 
