@@ -1,15 +1,15 @@
 package com.nts.cleancode.collections;
 
 public class Map extends AbstractCollection {
+	private static int INITIAL_CAPACITY = 10;
 	protected Object[] keys = new Object[INITIAL_CAPACITY];
 	protected Object[] values = new Object[INITIAL_CAPACITY];
+	private int size = 0;
 	private int indexWhereKeyFound;
+	private boolean readOnly;
+	
 	public boolean isEmpty() {
 		return size == 0;
-	}
-
-	// Do nothing because user must input key and value
-	public void add(Object element) {
 	}
 
 	public void add(Object key, Object value) {
